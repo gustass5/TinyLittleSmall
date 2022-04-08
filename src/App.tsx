@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { MapPage } from './pages/MapPage';
-import { WorldPage } from './pages/WorldPage';
+import { MapPage } from './pages/MapPage/MapPage';
+import { WorldPage } from './pages/WorldPage/WorldPage';
 
 function App() {
-	const [currentPage, changeCurrentPage] = useState('main');
+	const [currentPage, changeCurrentPage] = useState('world');
 
 	return (
 		<div className="h-screen">
