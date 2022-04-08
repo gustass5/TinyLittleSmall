@@ -1,15 +1,21 @@
-import { Canvas } from '@react-three/fiber';
+import { useState } from 'react';
+import { MapPage } from './pages/MapPage';
+import { WorldPage } from './pages/WorldPage';
+
 function App() {
+	const [currentPage, changeCurrentPage] = useState('main');
+
 	return (
-		<div id="canvas-container">
-			<Canvas>
-				<ambientLight intensity={0.1} />
-				<directionalLight color="red" position={[0, 0, 5]} />
-				<mesh>
-					<boxGeometry />
-					<meshStandardMaterial />
-				</mesh>
-			</Canvas>
+		<div className="h-screen">
+			{currentPage === 'main' ? (
+				<MapPage
+					changeCurrentPage={destination => changeCurrentPage(destination)}
+				/>
+			) : (
+				<WorldPage
+					changeCurrentPage={destination => changeCurrentPage(destination)}
+				/>
+			)}
 		</div>
 	);
 }
