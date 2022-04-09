@@ -1,27 +1,26 @@
-import * as THREE from 'three';
 import { Canvas, useThree } from '@react-three/fiber';
 import { SceneContext } from '../../utils/SceneContext';
 import { World } from './World';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { useEffect } from 'react';
-
+import * as THREE from 'three';
 interface IWorldPage {
 	changeCurrentPage: (destination: string) => void;
 }
 
 export function WorldPage({ changeCurrentPage }: IWorldPage) {
 	return (
-		<Canvas
-			gl={{
-				toneMapping: THREE.ACESFilmicToneMapping,
-				outputEncoding: THREE.sRGBEncoding,
-				physicallyCorrectLights: true
-			}}
-			// camera-position={[-17, 31, 33]}
-			camera={{ fov: 45, position: [0, 0, 50] }}
-		>
+		<Canvas camera={{ fov: 45, position: [-17, 31, 33] }}>
 			<SceneContext />
-			<ambientLight intensity={0.1} />
+			<pointLight
+				position={[10, 20, 10]}
+				color={new THREE.Color('#FFCB8E')
+					.convertSRGBToLinear()
+					.convertSRGBToLinear()}
+				intensity={80}
+				distance={200}
+				castShadow={true}
+			/>
 			<World changeCurrentPage={destination => changeCurrentPage(destination)} />
 			<CameraController />
 		</Canvas>
