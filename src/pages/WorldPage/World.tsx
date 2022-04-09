@@ -115,12 +115,23 @@ export function World({ changeCurrentPage }: IWorld) {
 				/>
 			</mesh>
 
+			{/* Sides mesh */}
 			<mesh receiveShadow={true} position={[0, MAX_HEIGHT * 0.125, 0]}>
 				<cylinderGeometry args={[17.1, 17.1, MAX_HEIGHT * 0.25, 50, 1, true]} />
 				<meshPhysicalMaterial
 					envMap={envMap}
 					map={(textures.current as any).dirt}
 					envMapIntensity={0.2}
+					side={THREE.DoubleSide}
+				/>
+			</mesh>
+			{/* Floor mesh */}
+			<mesh receiveShadow={true} position={[0, -MAX_HEIGHT * 0.05, 0]}>
+				<cylinderGeometry args={[17.1, 17.1, MAX_HEIGHT * 0.1, 50]} />
+				<meshPhysicalMaterial
+					envMap={envMap}
+					map={(textures.current as any).dirt2}
+					envMapIntensity={0.1}
 					side={THREE.DoubleSide}
 				/>
 			</mesh>
