@@ -27,6 +27,7 @@ export function WorldPage({ changeCurrentPage }: IWorldPage) {
 		</Canvas>
 	);
 }
+
 const CameraController = () => {
 	const { camera, gl } = useThree();
 	useEffect(() => {
