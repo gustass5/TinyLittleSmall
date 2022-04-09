@@ -55,12 +55,12 @@ export function World({ changeCurrentPage }: IWorld) {
 			});
 
 		textures.current = {
-			dirt: new TextureLoader().load('../assets/dirt.png'),
-			dirt2: new TextureLoader().load('../assets/dirt2.jpg'),
-			grass: new TextureLoader().load('../assets/grass.jpg'),
-			sand: new TextureLoader().load('../assets/sand.jpg'),
-			water: new TextureLoader().load('../assets/water.jpg'),
-			stone: new TextureLoader().load('../assets/stone.png')
+			dirt: new TextureLoader().load('../assets/textures_1/dirt.png'),
+			dirt2: new TextureLoader().load('../assets/textures_1/dirt2.png'),
+			grass: new TextureLoader().load('../assets/textures_1/grass.png'),
+			sand: new TextureLoader().load('../assets/textures_1/sand.png'),
+			water: new TextureLoader().load('../assets/textures_1/water.png'),
+			stone: new TextureLoader().load('../assets/textures_1/stone.png')
 		};
 
 		worldGeometry.current = generateWorldGeometry();

@@ -12,7 +12,7 @@ export function WorldMesh({ envMap, geometry, map }: IWorldMesh) {
 			<meshStandardMaterial
 				envMap={envMap}
 				flatShading={true}
-				envMapIntensity={0.3}
+				envMapIntensity={0.4}
 				map={map}
 			/>
 		</mesh>
