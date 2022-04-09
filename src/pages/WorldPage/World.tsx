@@ -17,10 +17,11 @@ const SAND_HEIGHT = MAX_HEIGHT * 0.3;
 const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 
 interface IWorld {
+	seed: string;
 	changeCurrentPage: (destination: string) => void;
 }
 
-export function World({ changeCurrentPage }: IWorld) {
+export function World({ changeCurrentPage, seed }: IWorld) {
 	const [envMap, setEnvMap] = useState<THREE.Texture>();
 	// [NOTE]: Not sure what (useRef or useState) is better to use in this case...
 	const worldGeometry = useRef<{
@@ -63,7 +64,7 @@ export function World({ changeCurrentPage }: IWorld) {
 			stone: new TextureLoader().load('../assets/textures_1/stone.png')
 		};
 
-		worldGeometry.current = generateWorldGeometry();
+		worldGeometry.current = generateWorldGeometry(seed);
 	}, [gl]);
 
 	return (
@@ -150,7 +151,7 @@ function makeHexGeometry({ x, y, h }: IHexagon): THREE.CylinderGeometry {
 	return geo;
 }
 
-function generateWorldGeometry(): {
+function generateWorldGeometry(seed: string): {
 	stoneGeometry: THREE.BufferGeometry;
 	dirtGeometry: THREE.BufferGeometry;
 	dirt2Geometry: THREE.BufferGeometry;
@@ -163,7 +164,7 @@ function generateWorldGeometry(): {
 	let sandGeometry: THREE.BufferGeometry = new THREE.BoxGeometry(0, 0, 0);
 	let grassGeometry: THREE.BufferGeometry = new THREE.BoxGeometry(0, 0, 0);
 
-	const simplex = new SimplexNoise('seed_here');
+	const simplex = new SimplexNoise(seed);
 
 	for (let i = -15; i <= 15; i++) {
 		for (let j = -15; j <= 15; j++) {

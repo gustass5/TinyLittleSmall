@@ -5,10 +5,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { useEffect } from 'react';
 import * as THREE from 'three';
 interface IWorldPage {
+	seed: string;
 	changeCurrentPage: (destination: string) => void;
 }
 
-export function WorldPage({ changeCurrentPage }: IWorldPage) {
+export function WorldPage({ changeCurrentPage, seed }: IWorldPage) {
 	return (
 		<Canvas camera={{ fov: 45, position: [-17, 31, 33] }}>
 			<SceneContext />
@@ -21,7 +22,10 @@ export function WorldPage({ changeCurrentPage }: IWorldPage) {
 				distance={200}
 				castShadow={true}
 			/>
-			<World changeCurrentPage={destination => changeCurrentPage(destination)} />
+			<World
+				seed={seed}
+				changeCurrentPage={destination => changeCurrentPage(destination)}
+			/>
 			<CameraController />
 		</Canvas>
 	);
