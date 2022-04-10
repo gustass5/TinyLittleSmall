@@ -1,4 +1,4 @@
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
@@ -21,6 +21,7 @@ interface IWorld {
 }
 
 export function World({ seed }: IWorld) {
+	const worldRef = useRef<any>();
 	const simplex = useRef(new SimplexNoise(seed));
 	const [envMap, setEnvMap] = useState<THREE.Texture>();
 	// [NOTE]: Not sure what (useRef or useState) is better to use in this case...
@@ -67,77 +68,83 @@ export function World({ seed }: IWorld) {
 		worldGeometry.current = generateWorldGeometry(simplex.current);
 	}, [gl]);
 
+	useFrame(() => ((worldRef.current as THREE.Group).rotation.y += 0.001));
+
 	return (
 		<>
-			<WorldMesh
-				envMap={envMap}
-				geometry={worldGeometry.current.stoneGeometry}
-				map={(textures.current as any).stone}
-			/>
-			<WorldMesh
-				envMap={envMap}
-				geometry={worldGeometry.current.grassGeometry}
-				map={(textures.current as any).grass}
-			/>
-			<WorldMesh
-				envMap={envMap}
-				geometry={worldGeometry.current.dirt2Geometry}
-				map={(textures.current as any).dirt2}
-			/>
-			<WorldMesh
-				envMap={envMap}
-				geometry={worldGeometry.current.dirtGeometry}
-				map={(textures.current as any).dirt}
-			/>
-			<WorldMesh
-				envMap={envMap}
-				geometry={worldGeometry.current.sandGeometry}
-				map={(textures.current as any).sand}
-			/>
-
-			{/* Water mesh */}
-			<mesh receiveShadow={true} position={[0, MAX_HEIGHT * 0.1, 0]}>
-				<cylinderGeometry args={[17, 17, MAX_HEIGHT * 0.2, 50]} />
-				<meshPhysicalMaterial
+			<group ref={worldRef}>
+				<WorldMesh
 					envMap={envMap}
-					// $$ Water color could alse be varied for different worlds
-					color={new THREE.Color('#55aaff')
-						.convertSRGBToLinear()
-						.multiplyScalar(3)}
-					ior={1.4}
-					transmission={1}
-					transparent={true}
-					thickness={1.5}
-					envMapIntensity={0.2}
-					roughness={1}
-					metalness={0.025}
-					roughnessMap={(textures.current as any).water}
-					metalnessMap={(textures.current as any).water}
+					geometry={worldGeometry.current.stoneGeometry}
+					map={(textures.current as any).stone}
 				/>
-			</mesh>
-
-			{/* Sides mesh */}
-			<mesh receiveShadow={true} position={[0, MAX_HEIGHT * 0.125, 0]}>
-				<cylinderGeometry args={[17.1, 17.1, MAX_HEIGHT * 0.25, 50, 1, true]} />
-				<meshPhysicalMaterial
+				<WorldMesh
 					envMap={envMap}
-					map={(textures.current as any).dirt}
-					envMapIntensity={0.2}
-					side={THREE.DoubleSide}
+					geometry={worldGeometry.current.grassGeometry}
+					map={(textures.current as any).grass}
 				/>
-			</mesh>
-			{/* Floor mesh */}
-			<mesh receiveShadow={true} position={[0, -MAX_HEIGHT * 0.05, 0]}>
-				<cylinderGeometry args={[17.1, 17.1, MAX_HEIGHT * 0.1, 50]} />
-				<meshPhysicalMaterial
+				<WorldMesh
 					envMap={envMap}
+					geometry={worldGeometry.current.dirt2Geometry}
 					map={(textures.current as any).dirt2}
-					envMapIntensity={0.1}
-					side={THREE.DoubleSide}
 				/>
-			</mesh>
+				<WorldMesh
+					envMap={envMap}
+					geometry={worldGeometry.current.dirtGeometry}
+					map={(textures.current as any).dirt}
+				/>
+				<WorldMesh
+					envMap={envMap}
+					geometry={worldGeometry.current.sandGeometry}
+					map={(textures.current as any).sand}
+				/>
 
-			<CloudMesh envMap={envMap} />
+				{/* Water mesh */}
+				<mesh receiveShadow={true} position={[0, MAX_HEIGHT * 0.1, 0]}>
+					<cylinderGeometry args={[17, 17, MAX_HEIGHT * 0.2, 50]} />
+					<meshPhysicalMaterial
+						envMap={envMap}
+						// $$ Water color could alse be varied for different worlds
+						color={new THREE.Color('#55aaff')
+							.convertSRGBToLinear()
+							.multiplyScalar(3)}
+						ior={1.4}
+						transmission={1}
+						transparent={true}
+						thickness={1.5}
+						envMapIntensity={0.2}
+						roughness={1}
+						metalness={0.025}
+						roughnessMap={(textures.current as any).water}
+						metalnessMap={(textures.current as any).water}
+					/>
+				</mesh>
+
+				{/* Sides mesh */}
+				<mesh receiveShadow={true} position={[0, MAX_HEIGHT * 0.125, 0]}>
+					<cylinderGeometry
+						args={[17.1, 17.1, MAX_HEIGHT * 0.25, 50, 1, true]}
+					/>
+					<meshPhysicalMaterial
+						envMap={envMap}
+						map={(textures.current as any).dirt}
+						envMapIntensity={0.2}
+						side={THREE.DoubleSide}
+					/>
+				</mesh>
+				{/* Floor mesh */}
+				<mesh receiveShadow={true} position={[0, -MAX_HEIGHT * 0.05, 0]}>
+					<cylinderGeometry args={[17.1, 17.1, MAX_HEIGHT * 0.1, 50]} />
+					<meshPhysicalMaterial
+						envMap={envMap}
+						map={(textures.current as any).dirt2}
+						envMapIntensity={0.1}
+						side={THREE.DoubleSide}
+					/>
+				</mesh>
+
+				<CloudMesh envMap={envMap} />
+			</group>
 		</>
 	);
 }
