@@ -9,7 +9,7 @@ interface IWorldMesh {
 export function WorldMesh({ envMap, geometry, map }: IWorldMesh) {
 	return (
 		<mesh geometry={geometry} castShadow={true} receiveShadow={true}>
-			<meshStandardMaterial
+			<meshPhysicalMaterial
 				envMap={envMap}
 				flatShading={true}
 				envMapIntensity={0.4}
