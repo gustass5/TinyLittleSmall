@@ -1,22 +1,90 @@
-export function UserInterface() {
+import { useState } from 'react';
+import { IWorldData } from '../../../App';
+
+export function UserInterface({
+	returnToMap,
+	currentWorld
+}: {
+	currentWorld: number;
+	returnToMap: () => void;
+}) {
+	const [currentPhoto, setCurrentPhoto] = useState('');
+
 	function handlePhoto() {
 		const canvas = document.querySelector('canvas');
 
-		var dataURL = canvas?.toDataURL();
-		console.log({ dataURL });
-		var a = document.createElement('a'); //Create <a>
+		const dataURL = canvas?.toDataURL();
+		const data = localStorage.getItem('TinyData');
+
+		if (data !== null) {
+			const newData: IWorldData[] = JSON.parse(data).reduce(
+				(worldsData: IWorldData[], world: IWorldData, index: number) => {
+					if (currentWorld === index) {
+						return [...worldsData, { ...world, imageSet: true }];
+					}
+
+					return [...worldsData, world];
+				},
+				[]
+			);
+			localStorage.setItem('TinyData', JSON.stringify(newData));
+		}
 		if (dataURL !== undefined) {
-			a.href = dataURL; //Image Base64 Goes here
-			a.download = 'Image.png'; //File name Here
-			a.click();
+			setCurrentPhoto(dataURL);
 		}
 	}
 
+	function download() {
+		const a = document.createElement('a'); //Create <a>
+		a.href = currentPhoto; //Image Base64 Goes here
+		a.download = `TinyWorld-${currentWorld}.png`; //File name Here
+		a.click();
+	}
+
 	return (
-		<div className="absolute w-full bottom-0 h-16 bg-black/10 z-10 flex justify-end items-center">
+		<div className="absolute w-full bottom-0 h-16 bg-black/10 z-10 flex justify-between items-center">
+			<svg
+				onClick={returnToMap}
+				className="text-white mx-6 h-12 w-auto hover:text-red-400 transition ease-in-out duration-100 cursor-pointer "
+				xmlns="http://www.w3.org/2000/svg"
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+			>
+				<path
+					className="fill-current"
+					d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"
+				/>
+			</svg>
+			{currentPhoto === '' ? (
+				<div className="h-10 w-20 border-2 border-dashed border-white text-xs text-center">
+					World photograph
+				</div>
+			) : (
+				<div className="flex h-10 w-auto">
+					<img
+						className="flex-1 border-2 border-dashed border-white"
+						src={currentPhoto}
+						alt="World photograph"
+					/>
+					<svg
+						onClick={download}
+						className="flex-1 text-white my-auto mx-2"
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+					>
+						<path
+							className="fill-current"
+							d="M16 11h5l-9 10-9-10h5v-11h8v11zm1 11h-10v2h10v-2z"
+						/>
+					</svg>
+				</div>
+			)}
 			<svg
 				onClick={handlePhoto}
-				className="text-white mx-12 h-12 w-auto hover:text-red-400 transition ease-in-out duration-100 cursor-pointer "
+				className="text-white mx-6 h-12 w-auto hover:text-red-400 transition ease-in-out duration-100 cursor-pointer "
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"

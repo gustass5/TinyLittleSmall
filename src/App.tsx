@@ -6,13 +6,17 @@ import { WorldPage } from './pages/WorldPage/WorldPage';
 const WORLD_COUNT = 6;
 const SEED_LENGTH = 8;
 
-interface IWorldData {
+export interface IWorldData {
 	seed: string;
+	// name: string | null;
+	imageSet: boolean;
 }
 
 function App() {
-	const [currentPage, changeCurrentPage] = useState('world');
+	const [currentPage, changeCurrentPage] = useState('map');
 	const [worldsData, updateWorldsData] = useState<IWorldData[]>([]);
+	const [availableWorldCount, setAvailableWorldCount] = useState<number>(0);
+	const [currentWorld, setCurrentWorld] = useState<number>(0);
 
 	useEffect(() => {
 		const data = localStorage.getItem('TinyData');
@@ -22,13 +26,21 @@ function App() {
 
 	useEffect(() => {
 		console.log({ worldsData });
+		setAvailableWorldCount(
+			worldsData.reduce((count, current) => {
+				if (current.imageSet) {
+					return count + 1;
+				}
+				return count;
+			}, 0)
+		);
 	}, [worldsData]);
 
 	function generateWorldsData(): IWorldData[] {
 		let worlds: IWorldData[] = [];
 		for (let i = 0; i < WORLD_COUNT; i++) {
 			const seed = generateSeed(SEED_LENGTH);
-			worlds = [...worlds, { seed }];
+			worlds = [...worlds, { seed, imageSet: false }];
 		}
 		localStorage.setItem('TinyData', JSON.stringify(worlds));
 		return worlds;
@@ -45,6 +57,21 @@ function App() {
 		return result;
 	}
 
+	function returnToMap() {
+		const data = localStorage.getItem('TinyData');
+		if (data !== null) {
+			const parsedData: IWorldData[] = JSON.parse(data);
+			if (
+				parsedData[availableWorldCount].imageSet &&
+				availableWorldCount < WORLD_COUNT
+			) {
+				setAvailableWorldCount(availableWorldCount + 1);
+			}
+		}
+
+		changeCurrentPage('map');
+	}
+
 	if (worldsData.length === 0) {
 		// [TODO]: Add component with loading animation
 		return <div>LOADING...</div>;
@@ -52,14 +79,20 @@ function App() {
 
 	return (
 		<div className="h-screen">
-			{currentPage === 'main' ? (
+			{currentPage === 'map' ? (
 				<MapPage
-					changeCurrentPage={destination => changeCurrentPage(destination)}
+					changeCurrentPage={(destination: string) =>
+						changeCurrentPage(destination)
+					}
+					setCurrentWorld={(index: number) => setCurrentWorld(index)}
+					worlds={worldsData}
+					availableWorldCount={availableWorldCount}
 				/>
 			) : (
 				<WorldPage
-					seed={worldsData[0].seed}
-					changeCurrentPage={destination => changeCurrentPage(destination)}
+					currentWorld={currentWorld}
+					seed={worldsData[currentWorld].seed}
+					returnToMap={returnToMap}
 				/>
 			)}
 		</div>

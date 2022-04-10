@@ -7,13 +7,14 @@ import * as THREE from 'three';
 import { UserInterface } from './components/UserInterface';
 interface IWorldPage {
 	seed: string;
-	changeCurrentPage: (destination: string) => void;
+	currentWorld: number;
+	returnToMap: () => void;
 }
 
-export function WorldPage({ changeCurrentPage, seed }: IWorldPage) {
+export function WorldPage({ seed, currentWorld, returnToMap }: IWorldPage) {
 	return (
 		<>
-			<UserInterface />
+			<UserInterface returnToMap={returnToMap} currentWorld={currentWorld} />
 			<Canvas
 				gl={canvas =>
 					new THREE.WebGLRenderer({
@@ -33,10 +34,7 @@ export function WorldPage({ changeCurrentPage, seed }: IWorldPage) {
 					distance={200}
 					castShadow={true}
 				/>
-				<World
-					seed={seed}
-					changeCurrentPage={destination => changeCurrentPage(destination)}
-				/>
+				<World seed={seed} />
 				<CameraController />
 			</Canvas>
 		</>

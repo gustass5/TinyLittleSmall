@@ -18,10 +18,9 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 
 interface IWorld {
 	seed: string;
-	changeCurrentPage: (destination: string) => void;
 }
 
-export function World({ changeCurrentPage, seed }: IWorld) {
+export function World({ seed }: IWorld) {
 	const simplex = useRef(new SimplexNoise(seed));
 	const [envMap, setEnvMap] = useState<THREE.Texture>();
 	// [NOTE]: Not sure what (useRef or useState) is better to use in this case...

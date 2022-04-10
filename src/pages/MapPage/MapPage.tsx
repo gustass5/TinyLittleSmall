@@ -1,18 +1,40 @@
 import { Canvas } from '@react-three/fiber';
+import { IWorldData } from '../../App';
 
 interface IMapPage {
 	changeCurrentPage: (destination: string) => void;
+	setCurrentWorld: (index: number) => void;
+	worlds: IWorldData[];
+	availableWorldCount: number;
 }
 
-export function MapPage({ changeCurrentPage }: IMapPage) {
+export function MapPage({
+	changeCurrentPage,
+	worlds,
+	setCurrentWorld,
+	availableWorldCount
+}: IMapPage) {
+	function handleClick(index: number) {
+		if (index > availableWorldCount) {
+			return;
+		}
+		setCurrentWorld(index);
+		changeCurrentPage('world');
+	}
+
 	return (
-		<Canvas>
-			<ambientLight intensity={0.1} />
-			<directionalLight color="red" position={[0, 0, 5]} />
-			<mesh position={[1, 1, 1]} onClick={() => changeCurrentPage('world')}>
-				<boxGeometry args={[1, 1, 1]} />
-				<meshStandardMaterial color="hotpink" />
-			</mesh>
-		</Canvas>
+		<div className="h-screen flex flex-col">
+			{worlds.map((world, index) => (
+				<div
+					key={index}
+					className={`m-1 p-1 ${
+						index <= availableWorldCount ? 'bg-blue-500' : 'bg-gray-500'
+					}`}
+					onClick={() => handleClick(index)}
+				>
+					WORLD: {index}
+				</div>
+			))}
+		</div>
 	);
 }
