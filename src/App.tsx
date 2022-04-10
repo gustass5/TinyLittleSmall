@@ -106,6 +106,7 @@ function App() {
 					setCurrentWorld={(index: number) => setCurrentWorld(index)}
 					worlds={worldsData}
 					availableWorldCount={availableWorldCount}
+					currentWorld={currentWorld}
 				/>
 			) : (
 				<WorldPage

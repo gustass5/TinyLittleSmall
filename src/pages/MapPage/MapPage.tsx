@@ -6,15 +6,17 @@ interface IMapPage {
 	setCurrentWorld: (index: number) => void;
 	worlds: IWorldData[];
 	availableWorldCount: number;
+	currentWorld: number;
 }
 
 export function MapPage({
 	changeCurrentPage,
 	worlds,
 	setCurrentWorld,
-	availableWorldCount
+	availableWorldCount,
+	currentWorld
 }: IMapPage) {
-	const [currentWorldCard, setCurrentWorldCard] = useState(availableWorldCount);
+	const [currentWorldCard, setCurrentWorldCard] = useState(currentWorld);
 
 	function setCurrentCard(index: number) {
 		if (index < 0 || index >= worlds.length) {
