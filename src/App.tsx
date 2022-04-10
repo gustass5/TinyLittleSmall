@@ -26,7 +26,6 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		console.log({ worldsData });
 		setAvailableWorldCount(
 			worldsData.reduce((count, current) => {
 				if (current.imageSet) {
@@ -73,6 +72,13 @@ function App() {
 		changeCurrentPage('map');
 	}
 
+	function startNewGame() {
+		updateWorldsData(generateWorldsData());
+		changeCurrentPage('map');
+		setAvailableWorldCount(0);
+		setCurrentWorld(0);
+	}
+
 	if (worldsData.length === 0) {
 		// [TODO]: Add component with loading animation
 		return <div>LOADING...</div>;
@@ -84,6 +90,7 @@ function App() {
 				changeCurrentPage={(destination: string) =>
 					changeCurrentPage(destination)
 				}
+				startNewGame={() => startNewGame()}
 				buttonText={availableWorldCount === 0 ? 'Start' : 'Continue'}
 			/>
 		);
