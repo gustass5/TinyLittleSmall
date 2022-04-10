@@ -28,9 +28,7 @@ export function WorldPage({ changeCurrentPage, seed }: IWorldPage) {
 				<SceneContext />
 				<pointLight
 					position={[10, 20, 10]}
-					color={new THREE.Color('#FFCB8E')
-						.convertSRGBToLinear()
-						.convertSRGBToLinear()}
+					color={new THREE.Color('#FFCB8E').convertSRGBToLinear()}
 					intensity={80}
 					distance={200}
 					castShadow={true}
