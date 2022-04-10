@@ -2,15 +2,16 @@ import { Canvas } from '@react-three/fiber';
 import { SceneContext } from '../../utils/SceneContext';
 import { World } from '../WorldPage/World';
 import * as THREE from 'three';
+import { WORLD_COUNT } from '../../App';
 
 export function StartPage({
 	changeCurrentPage,
 	startNewGame,
-	buttonText
+	availableWorldCount
 }: {
 	changeCurrentPage: (destination: string) => void;
 	startNewGame: () => void;
-	buttonText: string;
+	availableWorldCount: number;
 }) {
 	return (
 		<div className="h-screen flex items-center justify-center">
@@ -32,11 +33,24 @@ export function StartPage({
 					</span>
 				</header>
 				<div className="flex-1 flex flex-col justify-between">
-					<div
-						className="text-center py-6 bg-gray-100 cursor-pointer text-3xl bg-orange-400 shadow text-orange-900 rounded-md hover:bg-orange-300 transition ease-in-out duration-100"
-						onClick={() => changeCurrentPage('map')}
-					>
-						{buttonText}
+					<div>
+						<div
+							className="text-center py-6 bg-gray-100 cursor-pointer text-3xl bg-orange-400 shadow text-orange-900 rounded-md hover:bg-orange-300 transition ease-in-out duration-100"
+							onClick={() => changeCurrentPage('map')}
+						>
+							{availableWorldCount === 0 ? 'Start' : 'Continue'}
+						</div>
+						{availableWorldCount === WORLD_COUNT && (
+							<div className="text-orange-600 p-4">
+								You successfully finished the demo! <br />
+								Thank you for playing Tiny Worlds. <br />
+								You can continue and see your worlds again or start a
+								new game. <br />
+								(Warning: After starting new game, all your existing
+								worlds will be deleted and new worlds will be generated
+								in their place)
+							</div>
+						)}
 					</div>
 
 					<div

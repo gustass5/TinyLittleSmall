@@ -4,7 +4,7 @@ import { MapPage } from './pages/MapPage/MapPage';
 import { StartPage } from './pages/StartPage/StartPage';
 import { WorldPage } from './pages/WorldPage/WorldPage';
 
-const WORLD_COUNT = 6;
+export const WORLD_COUNT = 6;
 const SEED_LENGTH = 8;
 
 export interface IWorldData {
@@ -58,14 +58,22 @@ function App() {
 	}
 
 	function returnToMap() {
+		if (availableWorldCount === WORLD_COUNT && currentWorld === WORLD_COUNT - 1) {
+			changeCurrentPage('start');
+			return;
+		}
 		const data = localStorage.getItem('TinyData');
 		if (data !== null) {
 			const parsedData: IWorldData[] = JSON.parse(data);
 			if (
-				parsedData[availableWorldCount].imageSet &&
-				availableWorldCount < WORLD_COUNT
+				availableWorldCount < WORLD_COUNT &&
+				parsedData[availableWorldCount].imageSet
 			) {
 				setAvailableWorldCount(availableWorldCount + 1);
+				if (availableWorldCount + 1 === WORLD_COUNT) {
+					changeCurrentPage('start');
+					return;
+				}
 			}
 		}
 
@@ -91,7 +99,7 @@ function App() {
 					changeCurrentPage(destination)
 				}
 				startNewGame={() => startNewGame()}
-				buttonText={availableWorldCount === 0 ? 'Start' : 'Continue'}
+				availableWorldCount={availableWorldCount}
 			/>
 		);
 	}
