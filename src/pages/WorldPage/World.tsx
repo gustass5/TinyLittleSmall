@@ -22,6 +22,7 @@ interface IWorld {
 }
 
 export function World({ changeCurrentPage, seed }: IWorld) {
+	const simplex = useRef(new SimplexNoise(seed));
 	const [envMap, setEnvMap] = useState<THREE.Texture>();
 	// [NOTE]: Not sure what (useRef or useState) is better to use in this case...
 	const worldGeometry = useRef<{
@@ -64,7 +65,7 @@ export function World({ changeCurrentPage, seed }: IWorld) {
 			stone: new TextureLoader().load('../assets/textures_1/stone.png')
 		};
 
-		worldGeometry.current = generateWorldGeometry(seed);
+		worldGeometry.current = generateWorldGeometry(simplex.current);
 	}, [gl]);
 
 	return (
@@ -153,9 +154,12 @@ function makeHexGeometry({ x, y, h }: IHexagon): THREE.CylinderGeometry {
 	return geo;
 }
 
-function makeStoneGeometry({ x, y, h }: IHexagon): THREE.SphereGeometry {
-	const px = Math.random() * 0.4;
-	const py = Math.random() * 0.4;
+function makeStoneGeometry(
+	{ x, y, h }: IHexagon,
+	simplex: SimplexNoise
+): THREE.SphereGeometry {
+	const px = Math.abs(simplex.noise2D(x, y)) * 0.4;
+	const py = Math.abs(simplex.noise2D(y, x)) * 0.4;
 
 	const geo = new THREE.SphereGeometry(Math.random() * 0.3 + 0.1, 7, 7);
 	geo.translate(x + px, h, y + py);
@@ -163,8 +167,11 @@ function makeStoneGeometry({ x, y, h }: IHexagon): THREE.SphereGeometry {
 	return geo;
 }
 
-function makeTreeGeometry({ x, y, h }: IHexagon): THREE.BufferGeometry {
-	const treeHeight = Math.random() * 1 + 1.25;
+function makeTreeGeometry(
+	{ x, y, h }: IHexagon,
+	simplex: SimplexNoise
+): THREE.BufferGeometry {
+	const treeHeight = Math.abs(simplex.noise2D(x, y)) * 1 + 1.25;
 
 	const geo = new THREE.CylinderGeometry(0, 1.5, treeHeight, 3);
 	geo.translate(x, h + treeHeight * 0 + 1, y);
@@ -178,7 +185,10 @@ function makeTreeGeometry({ x, y, h }: IHexagon): THREE.BufferGeometry {
 	return mergeBufferGeometries([geo, geo2, geo3]);
 }
 
-function CloudMesh({ envMap }: { envMap: THREE.Texture | undefined }) {
+function CloudMesh(
+	{ envMap }: { envMap: THREE.Texture | undefined },
+	simplex: SimplexNoise
+) {
 	let geo: THREE.BufferGeometry = new THREE.SphereGeometry(0, 0, 0);
 	let count = Math.floor(Math.pow(Math.random(), 0.45) * 4);
 	// count = Math.random() * 4;
@@ -215,7 +225,7 @@ function CloudMesh({ envMap }: { envMap: THREE.Texture | undefined }) {
 	);
 }
 
-function generateWorldGeometry(seed: string): {
+function generateWorldGeometry(simplex: SimplexNoise): {
 	stoneGeometry: THREE.BufferGeometry;
 	dirtGeometry: THREE.BufferGeometry;
 	dirt2Geometry: THREE.BufferGeometry;
@@ -227,8 +237,6 @@ function generateWorldGeometry(seed: string): {
 	let dirt2Geometry: THREE.BufferGeometry = new THREE.BoxGeometry(0, 0, 0);
 	let sandGeometry: THREE.BufferGeometry = new THREE.BoxGeometry(0, 0, 0);
 	let grassGeometry: THREE.BufferGeometry = new THREE.BoxGeometry(0, 0, 0);
-
-	const simplex = new SimplexNoise(seed);
 
 	for (let i = -15; i <= 15; i++) {
 		for (let j = -15; j <= 15; j++) {
@@ -253,19 +261,19 @@ function generateWorldGeometry(seed: string): {
 			if (hexHeight > STONE_HEIGHT) {
 				stoneGeometry = mergeBufferGeometries([geometry, stoneGeometry]);
 
-				if (Math.random() > 0.8) {
+				if (Math.abs(simplex.noise2D(i, j)) > 0.8) {
 					stoneGeometry = mergeBufferGeometries([
 						stoneGeometry,
-						makeStoneGeometry(geometryParameters)
+						makeStoneGeometry(geometryParameters, simplex)
 					]);
 				}
 			} else if (hexHeight > DIRT_HEIGHT) {
 				dirtGeometry = mergeBufferGeometries([geometry, dirtGeometry]);
 
-				if (Math.random() > 0.8) {
+				if (Math.abs(simplex.noise2D(i, j)) > 0.4) {
 					grassGeometry = mergeBufferGeometries([
 						grassGeometry,
-						makeTreeGeometry(geometryParameters)
+						makeTreeGeometry(geometryParameters, simplex)
 					]);
 				}
 			} else if (hexHeight > GRASS_HEIGHT) {
@@ -273,10 +281,10 @@ function generateWorldGeometry(seed: string): {
 			} else if (hexHeight > SAND_HEIGHT) {
 				sandGeometry = mergeBufferGeometries([geometry, sandGeometry]);
 
-				if (Math.random() > 0.8 && stoneGeometry) {
+				if (Math.abs(simplex.noise2D(i, j)) > 0.8 && stoneGeometry) {
 					stoneGeometry = mergeBufferGeometries([
 						stoneGeometry,
-						makeStoneGeometry(geometryParameters)
+						makeStoneGeometry(geometryParameters, simplex)
 					]);
 				}
 			} else if (hexHeight > DIRT2_HEIGHT) {
