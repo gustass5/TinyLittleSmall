@@ -136,6 +136,8 @@ export function World({ changeCurrentPage, seed }: IWorld) {
 					side={THREE.DoubleSide}
 				/>
 			</mesh>
+
+			<CloudMesh envMap={envMap} />
 		</>
 	);
 }
@@ -174,6 +176,43 @@ function makeTreeGeometry({ x, y, h }: IHexagon): THREE.BufferGeometry {
 	geo3.translate(x, h + treeHeight * 1.25 + 1, y);
 
 	return mergeBufferGeometries([geo, geo2, geo3]);
+}
+
+function CloudMesh({ envMap }: { envMap: THREE.Texture | undefined }) {
+	let geo: THREE.BufferGeometry = new THREE.SphereGeometry(0, 0, 0);
+	let count = Math.floor(Math.pow(Math.random(), 0.45) * 4);
+	// count = Math.random() * 4;
+
+	for (let i = 0; i < count; i++) {
+		const puff1 = new THREE.SphereGeometry(1.2, 7, 7);
+		const puff2 = new THREE.SphereGeometry(1.5, 7, 7);
+		const puff3 = new THREE.SphereGeometry(0.9, 7, 7);
+
+		puff1.translate(-1.85, Math.random() * 0.3, 0);
+		puff2.translate(0, Math.random() * 0.3, 0);
+		puff3.translate(1.85, Math.random() * 0.3, 0);
+
+		const cloudGeo = mergeBufferGeometries([puff1, puff2, puff3]);
+		cloudGeo.translate(
+			Math.random() * 20 - 10,
+			Math.random() * 7 + 7,
+			Math.random() * 20 - 10
+		);
+
+		cloudGeo.rotateY(Math.random() * Math.PI * 2);
+
+		geo = mergeBufferGeometries([geo, cloudGeo]);
+	}
+
+	return (
+		<mesh geometry={geo}>
+			<meshStandardMaterial
+				envMap={envMap}
+				envMapIntensity={0.75}
+				flatShading={true}
+			/>
+		</mesh>
+	);
 }
 
 function generateWorldGeometry(seed: string): {
