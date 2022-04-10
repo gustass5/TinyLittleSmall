@@ -4,6 +4,7 @@ import { World } from './World';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { useEffect } from 'react';
 import * as THREE from 'three';
+import { UserInterface } from './components/UserInterface';
 interface IWorldPage {
 	seed: string;
 	changeCurrentPage: (destination: string) => void;
@@ -11,23 +12,36 @@ interface IWorldPage {
 
 export function WorldPage({ changeCurrentPage, seed }: IWorldPage) {
 	return (
-		<Canvas camera={{ fov: 45, position: [-17, 31, 33] }}>
-			<SceneContext />
-			<pointLight
-				position={[10, 20, 10]}
-				color={new THREE.Color('#FFCB8E')
-					.convertSRGBToLinear()
-					.convertSRGBToLinear()}
-				intensity={80}
-				distance={200}
-				castShadow={true}
-			/>
-			<World
-				seed={seed}
-				changeCurrentPage={destination => changeCurrentPage(destination)}
-			/>
-			<CameraController />
-		</Canvas>
+		<>
+			<UserInterface />
+			<Canvas
+				gl={canvas =>
+					new THREE.WebGLRenderer({
+						canvas,
+						antialias: true,
+						// [NOTE]: Might not be the most efficient solution
+						preserveDrawingBuffer: true
+					})
+				}
+				camera={{ fov: 45, position: [-17, 31, 33] }}
+			>
+				<SceneContext />
+				<pointLight
+					position={[10, 20, 10]}
+					color={new THREE.Color('#FFCB8E')
+						.convertSRGBToLinear()
+						.convertSRGBToLinear()}
+					intensity={80}
+					distance={200}
+					castShadow={true}
+				/>
+				<World
+					seed={seed}
+					changeCurrentPage={destination => changeCurrentPage(destination)}
+				/>
+				<CameraController />
+			</Canvas>
+		</>
 	);
 }
 
