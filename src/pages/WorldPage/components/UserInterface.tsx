@@ -45,7 +45,7 @@ export function UserInterface({
 		<div className="absolute w-full bottom-0 h-16 bg-black/10 z-10 flex justify-between items-center">
 			<svg
 				onClick={returnToMap}
-				className="text-white mx-6 h-12 w-auto hover:text-red-400 transition ease-in-out duration-100 cursor-pointer "
+				className="text-white mx-6 h-12 w-auto hover:text-orange-400 transition ease-in-out duration-100 cursor-pointer "
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"
@@ -84,7 +84,7 @@ export function UserInterface({
 			)}
 			<svg
 				onClick={handlePhoto}
-				className="text-white mx-6 h-12 w-auto hover:text-red-400 transition ease-in-out duration-100 cursor-pointer "
+				className="text-white mx-6 h-12 w-auto hover:text-orange-400 transition ease-in-out duration-100 cursor-pointer "
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"

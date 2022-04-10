@@ -100,7 +100,7 @@ function WorldCard({
 				<div className="flex items-center justify-center rounded w-full h-full bg-black/50">
 					<svg
 						onClick={() => handleClick(currentWorldCard)}
-						className="w-1/2 h-1/2  text-white hover:text-orange-300"
+						className="w-1/2 h-1/2  text-orange-100 hover:text-orange-300"
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
 						height="24"
