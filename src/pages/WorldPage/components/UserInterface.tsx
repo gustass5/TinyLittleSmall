@@ -37,7 +37,7 @@ export function UserInterface({
 	function download() {
 		const a = document.createElement('a'); //Create <a>
 		a.href = currentPhoto; //Image Base64 Goes here
-		a.download = `TinyWorld-${currentWorld}.png`; //File name Here
+		a.download = `TinyWorld-${currentWorld + 1}.png`; //File name Here
 		a.click();
 	}
 
