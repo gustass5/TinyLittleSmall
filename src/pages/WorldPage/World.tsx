@@ -146,8 +146,18 @@ export interface IHexagon {
 }
 
 function makeHexGeometry({ x, y, h }: IHexagon): THREE.CylinderGeometry {
-	let geo = new THREE.CylinderGeometry(1, 1, h, 6, 1, false);
+	const geo = new THREE.CylinderGeometry(1, 1, h, 6, 1, false);
 	geo.translate(x, h * 0.5, y);
+	return geo;
+}
+
+function makeStoneGeometry({ x, y, h }: IHexagon): THREE.SphereGeometry {
+	const px = Math.random() * 0.4;
+	const py = Math.random() * 0.4;
+
+	const geo = new THREE.SphereGeometry(Math.random() * 0.3 + 0.1, 7, 7);
+	geo.translate(x + px, h, y + py);
+
 	return geo;
 }
 
@@ -178,20 +188,36 @@ function generateWorldGeometry(seed: string): {
 
 			const hexHeight = noise * MAX_HEIGHT;
 
-			let geometry = makeHexGeometry({
+			const geometryParameters = {
 				x: position.x,
 				y: position.y,
 				h: hexHeight
-			});
+			};
+
+			let geometry = makeHexGeometry(geometryParameters);
 
 			if (hexHeight > STONE_HEIGHT) {
 				stoneGeometry = mergeBufferGeometries([geometry, stoneGeometry]);
+
+				if (Math.random() > 0.8) {
+					stoneGeometry = mergeBufferGeometries([
+						stoneGeometry,
+						makeStoneGeometry(geometryParameters)
+					]);
+				}
 			} else if (hexHeight > DIRT_HEIGHT) {
 				dirtGeometry = mergeBufferGeometries([geometry, dirtGeometry]);
 			} else if (hexHeight > GRASS_HEIGHT) {
 				grassGeometry = mergeBufferGeometries([geometry, grassGeometry]);
 			} else if (hexHeight > SAND_HEIGHT) {
 				sandGeometry = mergeBufferGeometries([geometry, sandGeometry]);
+
+				if (Math.random() > 0.8 && stoneGeometry) {
+					stoneGeometry = mergeBufferGeometries([
+						stoneGeometry,
+						makeStoneGeometry(geometryParameters)
+					]);
+				}
 			} else if (hexHeight > DIRT2_HEIGHT) {
 				dirt2Geometry = mergeBufferGeometries([geometry, dirt2Geometry]);
 			}
