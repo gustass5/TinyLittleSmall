@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { MapPage } from './pages/MapPage/MapPage';
+import { StartPage } from './pages/StartPage/StartPage';
 import { WorldPage } from './pages/WorldPage/WorldPage';
 
 const WORLD_COUNT = 6;
@@ -13,7 +14,7 @@ export interface IWorldData {
 }
 
 function App() {
-	const [currentPage, changeCurrentPage] = useState('map');
+	const [currentPage, changeCurrentPage] = useState('start');
 	const [worldsData, updateWorldsData] = useState<IWorldData[]>([]);
 	const [availableWorldCount, setAvailableWorldCount] = useState<number>(0);
 	const [currentWorld, setCurrentWorld] = useState<number>(0);
@@ -75,6 +76,17 @@ function App() {
 	if (worldsData.length === 0) {
 		// [TODO]: Add component with loading animation
 		return <div>LOADING...</div>;
+	}
+
+	if (currentPage === 'start') {
+		return (
+			<StartPage
+				changeCurrentPage={(destination: string) =>
+					changeCurrentPage(destination)
+				}
+				buttonText={availableWorldCount === 0 ? 'Start' : 'Continue'}
+			/>
+		);
 	}
 
 	return (
