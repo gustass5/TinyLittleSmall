@@ -69,7 +69,7 @@ export function UserInterface({
 					/>
 					<svg
 						onClick={download}
-						className="flex-1 text-white my-auto mx-2"
+						className="flex-1 text-white my-auto mx-4 cursor-pointer hover:text-orange-400"
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
 						height="24"
